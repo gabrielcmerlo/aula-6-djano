@@ -14,7 +14,7 @@ def login(request):
         )
 
         if(verificar_usuario != None):
-            auth.logout()
+            auth.login(request, verificar_usuario)
             
             return redirect('index')
         else:
@@ -28,6 +28,20 @@ def login(request):
 
 
 def register(request):
-    return render(request, 'pages/register.html')
 
+    if request.method == 'POST':
+        usuario = request.POST['usuario']
+        email = request.POST['email']
+        senha = request.POST['senha']
+        confirmar_senha = request.POST['confirmar_senha']
 
+        User.objects.create_user(
+            username=usuario,
+            email=email,
+            password=senha
+        )
+        
+        return redirect('login')
+        
+    else:
+        return render(request, 'pages/register.html')
